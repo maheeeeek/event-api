@@ -1,18 +1,15 @@
 const { body } = require('express-validator');
 
-
 const registerRules = [
-body('name').trim().isLength({ min: 2 }).withMessage('Name is required'),
-body('email').isEmail().withMessage('Valid email required'),
-body('password').isLength({ min: 6 }).withMessage('Password min 6 chars'),
-body('phoneNumber').optional().isLength({ min: 6 }).withMessage('Phone seems short'),
+  body('name').trim().notEmpty().withMessage('Name is required'),
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  body('phoneNumber').optional().isString().withMessage('Phone must be a string'),
 ];
-
 
 const loginRules = [
-body('email').isEmail().withMessage('Valid email required'),
-body('password').notEmpty().withMessage('Password required'),
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('password').notEmpty().withMessage('Password is required'),
 ];
-
 
 module.exports = { registerRules, loginRules };

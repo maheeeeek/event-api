@@ -2,41 +2,35 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const path = require('path');
+
 const authRoutes = require('./routes/auth.routes');
 const eventRoutes = require('./routes/event.routes');
 const { notFound, errorHandler } = require('./middleware/error');
 
-
 const app = express();
 
-
-// Middlewares
+// Core middlewares
 app.use(morgan('dev'));
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-
-// CORS for cookie-based auth
+// CORS (allow credentials for cookie)
+const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
 app.use(cors({
-origin: process.env.CORS_ORIGIN?.split(',') || '*',
-credentials: true,
+  origin: allowedOrigin,
+  credentials: true,
 }));
-
-
-// Serve uploaded images statically
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
-
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes); // all protected inside the routes
+app.use('/api/events', eventRoutes);
 
+// Health check
+app.get('/api/health', (req, res) => res.json({ ok: true }));
 
-// 404 + error handler
+// Error handlers
 app.use(notFound);
 app.use(errorHandler);
-
 
 module.exports = app;

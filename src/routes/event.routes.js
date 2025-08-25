@@ -1,33 +1,16 @@
 const express = require('express');
-const { protect } = require('../middleware/auth');
-const upload = require('../middleware/upload');
-const { createEventRules, idRule } = require('../validators/event.validators');
-const {
-  createEvent,
-  getEvents,
-  getEventById,
-  updateEvent,
-  deleteEvent
-} = require('../controllers/event.controller');
-
 const router = express.Router();
+const { protect } = require('../middleware/auth');
+const { createEventRules, idRule } = require('../validators/event.validators');
+const { createEvent, getEvents, getEventById, updateEvent, deleteEvent } = require('../controllers/event.controller');
 
-// All routes protected
+// All event routes protected
 router.use(protect);
 
-// Create
-router.post('/', upload.single('eventBanner'), createEventRules, createEvent);
-
-// List
+router.post('/', createEventRules, createEvent);
 router.get('/', getEvents);
-
-// Read
 router.get('/:id', idRule, getEventById);
-
-// Update
-router.put('/:id', idRule, upload.single('eventBanner'), createEventRules, updateEvent);
-
-// Delete
+router.patch('/:id', idRule, updateEvent);
 router.delete('/:id', idRule, deleteEvent);
 
 module.exports = router;

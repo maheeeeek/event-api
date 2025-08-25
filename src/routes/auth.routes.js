@@ -1,13 +1,13 @@
 const express = require('express');
-const { register, login } = require('../controllers/auth.controller');
-const { registerRules, loginRules } = require('../validators/auth.validators');
-
 const router = express.Router();
+const { register, login, logout, getProfile, updateProfile } = require('../controllers/auth.controller');
+const { registerRules, loginRules } = require('../validators/auth.validators');
+const { protect } = require('../middleware/auth');
 
-// @route   POST /api/auth/register
 router.post('/register', registerRules, register);
-
-// @route   POST /api/auth/login
 router.post('/login', loginRules, login);
+router.post('/logout', logout);
+router.get('/me', protect, getProfile);
+router.patch('/profile', protect, updateProfile);
 
 module.exports = router;
